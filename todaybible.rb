@@ -160,6 +160,7 @@ def printchapter
 	f = File.open("Bible_par.fb2")
 	doc = Nokogiri::XML(f)
 	doc.css("body:nth-of-type(#{@testament}) > section:nth-of-type(#{@book}) > section:nth-of-type(#{@chapter}) > p").each do |paragraph|
+		print "    "
 		paragraph.css("sup").each do |verse|
 			print verse.next_sibling.content.gsub(/^\s/, "")		
 		end
@@ -172,6 +173,7 @@ def printbook
 	f = File.open("Bible_par.fb2")
 	doc = Nokogiri::XML(f)
 	doc.css("body:nth-of-type(#{@testament}) > section:nth-of-type(#{@book}) > p").each do |paragraph|
+		print "    "
 		paragraph.css("sup").each do |verse|
 			print verse.next_sibling.content.gsub(/^\s/, "")		
 		end
