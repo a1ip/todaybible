@@ -156,9 +156,7 @@ def booknumber (bookname)
 	end	
 end
 
-def printchapter
-	f = File.open("Bible_par.fb2")
-	doc = Nokogiri::XML(f)
+def printchapter doc
 	doc.css("body:nth-of-type(#{@testament}) > section:nth-of-type(#{@book}) > section:nth-of-type(#{@chapter}) > p").each do |paragraph|
 		print "    "
 		paragraph.css("sup").each do |verse|
@@ -166,12 +164,17 @@ def printchapter
 		end
 		puts
 	end
-	f.close
 end
 
-def printbook
-	f = File.open("Bible_par.fb2")
-	doc = Nokogiri::XML(f)
+def printchapternl doc # each verse from new line
+	doc.css("body:nth-of-type(#{@testament}) > section:nth-of-type(#{@book}) > section:nth-of-type(#{@chapter}) > p").each do |paragraph|
+		paragraph.css("sup").each do |verse|
+			puts verse.next_sibling.content.gsub(/^\s/, "")		
+		end
+	end
+end
+
+def printbook doc
 	doc.css("body:nth-of-type(#{@testament}) > section:nth-of-type(#{@book}) > p").each do |paragraph|
 		print "    "
 		paragraph.css("sup").each do |verse|
@@ -179,15 +182,19 @@ def printbook
 		end
 		puts
 	end
-	f.close
 end
 
 def printplace
+	f = File.open("Bible_par.fb2")
+	doc = Nokogiri::XML(f)
 	if [31, 49, 50, 51, 64].include? @realbook
-		printbook
+		printbook(doc)
+	elsif [19, 20].include? @realbook
+		printchapternl(doc)
 	else
-		printchapter
+		printchapter(doc)
 	end
+	f.close
 end
 
 # puts booknumber(ARGV[0])
