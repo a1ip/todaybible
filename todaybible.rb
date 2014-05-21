@@ -174,7 +174,7 @@ def printchapternl doc # each verse from new line
 	end
 end
 
-def printbook doc
+def printbook doc # for books of one chapter
 	doc.css("body:nth-of-type(#{@testament}) > section:nth-of-type(#{@book}) > p").each do |paragraph|
 		print "    "
 		paragraph.css("sup").each do |verse|
@@ -196,10 +196,6 @@ def printplace
 	end
 	f.close
 end
-
-# puts booknumber(ARGV[0])
-
-# puts @testament.to_s + "\t" + @book.to_s + "\t" + @chapter.to_s
 
 printplace
 
