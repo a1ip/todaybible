@@ -13,7 +13,7 @@ if ARGV
 	else
 		@book = @realbook
 	end
-	@chapter =1 if not ARGV[1]
+	@chapter =1 unless ARGV[1]
 end
 
 
@@ -187,9 +187,10 @@ end
 def printplace
 	f = File.open("Bible_par.fb2")
 	doc = Nokogiri::XML(f)
-	if [31, 49, 50, 51, 64].include? @realbook
+	case @realbook
+	when 31, 49, 50, 51, 64
 		printbook(doc)
-	elsif [19, 20].include? @realbook
+	when 19, 20
 		printchapternl(doc)
 	else
 		printchapter(doc)
