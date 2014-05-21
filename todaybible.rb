@@ -2,11 +2,18 @@ require 'nokogiri'
 
 @testament = 1
 @book = 1
+@realbook = 1
 @chapter =1
 
 if ARGV
-	@book, @chapter = ARGV[0], ARGV[1]
-	# @testament = 2 if ARGV[0].to_i > 39
+	@realbook, @chapter = ARGV[0].to_i, ARGV[1].to_i
+	if ARGV[0].to_i > 39
+		@testament = 2
+		@book = @realbook - 39
+	else
+		@book = @realbook
+	end
+	@chapter =1 if not ARGV[1]
 end
 
 
@@ -145,16 +152,14 @@ def booknumber (bookname)
 	when "Откр."
 		66
 	else
-		
-	end
-	
+		1
+	end	
 end
 
-def printplace
+def printchapter
 	f = File.open("Bible_par.fb2")
 	doc = Nokogiri::XML(f)
-	# body:nth-of-type(#{@testament})
-	doc.css("body section:nth-of-type(#{@book}) section:nth-of-type(#{@chapter}) p").each do |paragraph|
+	doc.css("body:nth-of-type(#{@testament}) > section:nth-of-type(#{@book}) > section:nth-of-type(#{@chapter}) > p").each do |paragraph|
 		paragraph.css("sup").each do |verse|
 			print verse.next_sibling.content.gsub(/^\s/, "")		
 		end
@@ -163,5 +168,31 @@ def printplace
 	f.close
 end
 
+def printbook
+	f = File.open("Bible_par.fb2")
+	doc = Nokogiri::XML(f)
+	doc.css("body:nth-of-type(#{@testament}) > section:nth-of-type(#{@book}) > p").each do |paragraph|
+		paragraph.css("sup").each do |verse|
+			print verse.next_sibling.content.gsub(/^\s/, "")		
+		end
+		puts
+	end
+	f.close
+end
+
+def printplace
+	if [31, 49, 50, 51, 64].include? @realbook
+		printbook
+	else
+		printchapter
+	end
+end
+
+# puts booknumber(ARGV[0])
+
+# puts @testament.to_s + "\t" + @book.to_s + "\t" + @chapter.to_s
+
 printplace
+
+
 
