@@ -185,7 +185,7 @@ def printbook doc # for books of one chapter
 end
 
 def printplace
-	f = File.open("Bible_par.fb2")
+	f = File.open("./Bible_par.fb2")
 	doc = Nokogiri::XML(f)
 	case @realbook
 	when 31, 49, 50, 51, 64
