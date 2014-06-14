@@ -1,22 +1,5 @@
 require 'nokogiri'
 
-@testament = 1
-@book = 1
-@realbook = 1
-@chapter =1
-
-if ARGV
-	@realbook, @chapter = ARGV[0].to_i, ARGV[1].to_i
-	if ARGV[0].to_i > 39
-		@testament = 2
-		@book = @realbook - 39
-	else
-		@book = @realbook
-	end
-	@chapter =1 unless ARGV[1]
-end
-
-
 def booknumber (bookname)
 	case bookname
 	when "Быт."
@@ -156,30 +139,52 @@ def booknumber (bookname)
 	end	
 end
 
+@testament = 1
+@book = 1
+@realbook = 1
+@chapter =1
+
+if ARGV
+	@realbook, @chapter = ARGV[0].to_i, ARGV[1].to_i
+	if ARGV[0].to_i > 39
+		@testament = 2
+		@book = @realbook - 39
+	else
+		@book = @realbook
+	end
+	@chapter =1 unless ARGV[1]
+end
+
 def printchapter doc
 	doc.css("body:nth-of-type(#{@testament}) > section:nth-of-type(#{@book}) > section:nth-of-type(#{@chapter}) > p").each do |paragraph|
+		# remove emphasis tags
+		paragraph.css("emphasis").each do |em| 
+			em.replace em.inner_html 
+		end 
 		print "    "
-		paragraph.css("sup").each do |verse|
-			print verse.next_sibling.content.gsub(/^\s/, "")		
-		end
+		paragraph.to_s.scan(/sup> ([^<]*)</){|verse| print verse}
 		puts
 	end
 end
 
 def printchapternl doc # each verse from new line
 	doc.css("body:nth-of-type(#{@testament}) > section:nth-of-type(#{@book}) > section:nth-of-type(#{@chapter}) > p").each do |paragraph|
-		paragraph.css("sup").each do |verse|
-			puts verse.next_sibling.content.gsub(/^\s/, "")		
+		# remove emphasis tags
+		paragraph.css("emphasis").each do |em| 
+			em.replace em.inner_html 
 		end
+		paragraph.to_s.scan(/sup> ([^<]*)</){|verse| puts verse}
 	end
 end
 
 def printbook doc # for books of one chapter
 	doc.css("body:nth-of-type(#{@testament}) > section:nth-of-type(#{@book}) > p").each do |paragraph|
+		# remove emphasis tags
+		paragraph.css("emphasis").each do |em| 
+			em.replace em.inner_html 
+		end 
 		print "    "
-		paragraph.css("sup").each do |verse|
-			print verse.next_sibling.content.gsub(/^\s/, "")		
-		end
+		paragraph.to_s.scan(/sup> ([^<]*)</){|verse| print verse}
 		puts
 	end
 end
@@ -199,6 +204,3 @@ def printplace
 end
 
 printplace
-
-
-
