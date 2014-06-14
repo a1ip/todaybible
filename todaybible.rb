@@ -162,7 +162,7 @@ def printchapter doc
 			em.replace em.inner_html 
 		end 
 		print "    "
-		paragraph.to_s.scan(/sup> ([^<]*)</){|verse| print verse}
+		paragraph.to_s.scan(/sup> ([^<]*)</){|verse| print verse.join}
 		puts
 	end
 end
@@ -184,7 +184,7 @@ def printbook doc # for books of one chapter
 			em.replace em.inner_html 
 		end 
 		print "    "
-		paragraph.to_s.scan(/sup> ([^<]*)</){|verse| print verse}
+		paragraph.to_s.scan(/sup> ([^<]*)</){|verse| print verse.join}
 		puts
 	end
 end
